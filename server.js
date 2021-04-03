@@ -9,7 +9,7 @@ const propertyRouter = require("./routes/property-router");
 
 // create app and set app port
 const server = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 5000;
 
 // configure middlewares
 server.use(cors());
@@ -21,7 +21,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // redirect to default endpoint
 server.get("/", (req, res) => {
-    res.send("<h2>Hello from Tamleek Web API</h2>");
+    res.redirect("/api");
 });
 
 // default endpoint
