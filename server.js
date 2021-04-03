@@ -21,7 +21,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // redirect to default endpoint
 server.get("/", (req, res) => {
-    res.redirect("/api");
+    res.send("<h2>Hello from Tamleek Web API</h2>");
 });
 
 // default endpoint
