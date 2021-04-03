@@ -9,7 +9,7 @@ const propertyRouter = require("./routes/property-router");
 
 // create app and set app port
 const server = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT;
 
 // configure middlewares
 server.use(cors());
