@@ -8,6 +8,7 @@ const router = express.Router();
 // endpoints / routes
 router.post("/property", propertyController.createProperty);
 router.delete("/property-reset", propertyController.deleteAllProperties);
+router.get("/property-sync", propertyController.syncData);
 
 // export router
 module.exports = router;

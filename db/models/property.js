@@ -4,15 +4,16 @@ const mongoose = require("mongoose");
 // create schema
 const Property = new mongoose.Schema(
   {
-    region: { type: String, required: true },
-    willayat: { type: String, required: true },
+    region: { type: String, required: false },
+    willayat: { type: String, required: false },
     village: { type: String, required: false },
     zone: { type: String, required: false },
-    price: { type: mongoose.Types.Decimal128, required: true },
-    area: { type: Number, required: false },
-    type: { type: String, required: true },
-    source: { type: String, required: true },
-    year: { type: Number, required: true },
+    price: { type: String, required: false },
+    area: { type: String, required: false },
+    contract: { type: String, required: false },
+    type: { type: String, required: false },
+    source: { type: String, required: false },
+    year: { type: Number, required: false },
   },
   {
     timestamps: true
