@@ -1,6 +1,6 @@
 // load needed modules
 const mongoose = require("mongoose");
-// require('dotenv').config();
+// require('dotenv').config(); // enable only for development
 
 // database credentials
 const db_username = process.env.MONGODB_USERNAME;

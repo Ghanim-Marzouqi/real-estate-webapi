@@ -40,7 +40,7 @@ const syncData = (req, res) => {
           if (typeStr.includes("غرف")) type = "سكنية";
           if (typeStr.includes("محل")) type = "تجارية";
           if (typeStr.includes("حمّام")) type = "سكنية";
-          const year = 2021;
+          const year = Math.floor(Math.random() * (2021 - 2015 + 1) + 2015);
           scrapedData.push({
             region,
             willayat,
@@ -61,10 +61,13 @@ const syncData = (req, res) => {
       // 5. insert fetched data in mongodb
       await Property.insertMany(data);
 
-      res.json({
-        status: "success",
-        message: "All data synced successfully",
-        data: true
+      // 6. load all data
+      Property.find({}, (err, properties) => {
+        return res.json({
+          status: "success",
+          message: "All data synced successfully",
+          data: properties
+        });
       });
     } catch (error) {
       res.json({
@@ -128,16 +131,108 @@ const deleteAllProperties = async (req, res) => {
   });
 }
 
-const reverseString = (str) => {
-  var splitString = str.split("");
-  var reverseArray = splitString.reverse();
-  var joinArray = reverseArray.join("");
-  return joinArray;
+// function to load all data
+const loadAllProperties = async (req, res) => {
+  const body = req.body;
+
+  let searchParams = {};
+
+  if (Object.keys(body).length > 0) {
+    if (body.year && body.year !== "") {
+      searchParams = { ...searchParams, year: body.year };
+    }
+
+    if (body.region && body.region !== "") {
+      searchParams = { ...searchParams, region: body.region };
+    }
+
+    if (body.willayat && body.willayat !== "") {
+      searchParams = { ...searchParams, willayat: body.willayat };
+    }
+
+    if (body.village && body.village !== "") {
+      searchParams = { ...searchParams, village: body.village };
+    }
+
+    if (body.zone && body.zone !== "") {
+      searchParams = { ...searchParams, zone: body.zone };
+    }
+
+    if (body.moh) {
+      searchParams = { ...searchParams, source: "MOH" };
+    }
+
+    if (body.external) {
+      searchParams = { ...searchParams, source: "EXTERNAL" };
+    }
+
+    if (body.sale) {
+      searchParams = { ...searchParams, contract: "sale" };
+    }
+
+    if (body.mortgage) {
+      searchParams = { ...searchParams, contract: "mortgage" };
+    }
+
+    if (body.swap) {
+      searchParams = { ...searchParams, contract: "swap" };
+    }
+
+    if (body.residential) {
+      searchParams = { ...searchParams, type: "سكني" };
+    }
+
+    if (body.commercial) {
+      searchParams = { ...searchParams, type: "تجاري" };
+    }
+
+    if (body.industrial) {
+      searchParams = { ...searchParams, type: "صناعي" };
+    }
+
+    if (body.governmental) {
+      searchParams = { ...searchParams, type: "حكومي" };
+    }
+
+    if (body.tourist) {
+      searchParams = { ...searchParams, type: "سياحي" };
+    }
+
+    if (body.agricultral) {
+      searchParams = { ...searchParams, type: "زراعي" };
+    }
+
+    if (body.residential_commercial) {
+      searchParams = { ...searchParams, type: "سكني/تجاري" };
+    }
+
+    if (body.others) {
+      searchParams = { ...searchParams, type: "أخرى" };
+    }
+
+    Property.find(searchParams, (err, properties) => {
+      return res.status(200).json({
+        status: 'success',
+        message: 'Properties loaded successfully',
+        data: properties
+      });
+    });
+
+  } else {
+    Property.find({}, (err, properties) => {
+      return res.status(200).json({
+        status: 'success',
+        message: 'Properties loaded successfully',
+        data: properties
+      });
+    });
+  }
 }
 
 // export functions
 module.exports = {
   createProperty,
   deleteAllProperties,
-  syncData
+  syncData,
+  loadAllProperties
 }

@@ -9,6 +9,7 @@ const router = express.Router();
 router.post("/property", propertyController.createProperty);
 router.delete("/property-reset", propertyController.deleteAllProperties);
 router.get("/property-sync", propertyController.syncData);
+router.post("/properties", propertyController.loadAllProperties);
 
 // export router
 module.exports = router;
