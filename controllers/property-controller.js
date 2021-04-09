@@ -33,13 +33,13 @@ const syncData = (req, res) => {
           const area = $(el).children(".clear").text().replace(/\D/g, "");
           let typeStr = $(el).children(".clear").text().replace(/\s/g, "");
           let type = "";
-          if (typeStr.includes("سكنية")) type = "سكنية";
-          if (typeStr.includes("تجارية")) type = "تجارية";
-          if (typeStr.includes("صناعية")) type = "صناعية";
+          if (typeStr.includes("سكنية")) type = "سكني";
+          if (typeStr.includes("تجارية")) type = "تجاري";
+          if (typeStr.includes("صناعية")) type = "صناعي";
           if (typeStr.includes("أخرى")) type = "أخرى";
-          if (typeStr.includes("غرف")) type = "سكنية";
-          if (typeStr.includes("محل")) type = "تجارية";
-          if (typeStr.includes("حمّام")) type = "سكنية";
+          if (typeStr.includes("غرف")) type = "سكني";
+          if (typeStr.includes("محل")) type = "تجاري";
+          if (typeStr.includes("حمّام")) type = "سكني";
           const year = Math.floor(Math.random() * (2021 - 2015 + 1) + 2015);
           scrapedData.push({
             region,
@@ -61,13 +61,10 @@ const syncData = (req, res) => {
       // 5. insert fetched data in mongodb
       await Property.insertMany(data);
 
-      // 6. load all data
-      Property.find({}, (err, properties) => {
-        return res.json({
-          status: "success",
-          message: "All data synced successfully",
-          data: properties
-        });
+      return res.json({
+        status: "success",
+        message: "All data synced successfully",
+        data: true
       });
     } catch (error) {
       res.json({
@@ -134,6 +131,12 @@ const deleteAllProperties = async (req, res) => {
 // function to load all data
 const loadAllProperties = async (req, res) => {
   const body = req.body;
+  const params = req.query;
+
+  let options = {
+    page: req.query.page || 1,
+    limit: req.query.limit || 30
+  };
 
   let searchParams = {};
 
@@ -210,20 +213,36 @@ const loadAllProperties = async (req, res) => {
       searchParams = { ...searchParams, type: "أخرى" };
     }
 
-    Property.find(searchParams, (err, properties) => {
+    Property.paginate(searchParams, options, (err, result) => {
+      if (err) {
+        return res.status(200).json({
+          status: 'error',
+          message: 'Error has occured while loading properties',
+          data: err
+        });
+      }
+
       return res.status(200).json({
         status: 'success',
         message: 'Properties loaded successfully',
-        data: properties
+        data: result
       });
     });
 
   } else {
-    Property.find({}, (err, properties) => {
+    Property.paginate({}, options, (err, result) => {
+      if (err) {
+        return res.status(200).json({
+          status: 'error',
+          message: 'Error has occured while loading properties',
+          data: err
+        });
+      }
+
       return res.status(200).json({
         status: 'success',
         message: 'Properties loaded successfully',
-        data: properties
+        data: result
       });
     });
   }

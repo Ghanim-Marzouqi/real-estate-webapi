@@ -1,5 +1,6 @@
 // import needed modules
 const mongoose = require("mongoose");
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 // create schema
 const Property = new mongoose.Schema(
@@ -19,6 +20,9 @@ const Property = new mongoose.Schema(
     timestamps: true
   },
 );
+
+// enable pagination plugin
+Property.plugin(mongoosePaginate);
 
 // export mongoose model
 module.exports = mongoose.model("properties", Property);
