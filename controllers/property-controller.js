@@ -213,6 +213,33 @@ const loadAllProperties = async (req, res) => {
       searchParams = { ...searchParams, type: "أخرى" };
     }
 
+    let saleDocs = (await Property.paginate({ ...searchParams, contract: "sale" })).docs;
+    let mortgageDocs = (await Property.paginate({ ...searchParams, contract: "mortgage" })).docs;
+    let swapDocs = (await Property.paginate({ ...searchParams, contract: "swap" })).docs;
+
+    let saleDocsCount = (await Property.paginate({ ...searchParams, contract: "sale" })).totalDocs;
+    let mortgageDocsCount = (await Property.paginate({ ...searchParams, contract: "mortgage" })).totalDocs;
+    let swapDocsCount = (await Property.paginate({ ...searchParams, contract: "swap" })).totalDocs;
+
+    let mohDocsCount = {
+      count2015: (await Property.paginate({ ...searchParams, source: "MOH", year: 2015 })).totalDocs,
+      count2016: (await Property.paginate({ ...searchParams, source: "MOH", year: 2016 })).totalDocs,
+      count2017: (await Property.paginate({ ...searchParams, source: "MOH", year: 2017 })).totalDocs,
+      count2018: (await Property.paginate({ ...searchParams, source: "MOH", year: 2018 })).totalDocs,
+      count2019: (await Property.paginate({ ...searchParams, source: "MOH", year: 2019 })).totalDocs,
+      count2020: (await Property.paginate({ ...searchParams, source: "MOH", year: 2020 })).totalDocs,
+      count2021: (await Property.paginate({ ...searchParams, source: "MOH", year: 2021 })).totalDocs
+    };
+    let externalDocsCount = {
+      count2015: (await Property.paginate({ ...searchParams, source: "EXTERNAL", year: 2015 })).totalDocs,
+      count2016: (await Property.paginate({ ...searchParams, source: "EXTERNAL", year: 2016 })).totalDocs,
+      count2017: (await Property.paginate({ ...searchParams, source: "EXTERNAL", year: 2017 })).totalDocs,
+      count2018: (await Property.paginate({ ...searchParams, source: "EXTERNAL", year: 2018 })).totalDocs,
+      count2019: (await Property.paginate({ ...searchParams, source: "EXTERNAL", year: 2019 })).totalDocs,
+      count2020: (await Property.paginate({ ...searchParams, source: "EXTERNAL", year: 2020 })).totalDocs,
+      count2021: (await Property.paginate({ ...searchParams, source: "EXTERNAL", year: 2021 })).totalDocs,
+    };
+
     Property.paginate(searchParams, options, (err, result) => {
       if (err) {
         return res.status(200).json({
@@ -225,11 +252,50 @@ const loadAllProperties = async (req, res) => {
       return res.status(200).json({
         status: 'success',
         message: 'Properties loaded successfully',
-        data: result
+        data: {
+          ...result,
+          saleDocs,
+          mortgageDocs,
+          swapDocs,
+          saleDocsCount,
+          mortgageDocsCount,
+          swapDocsCount,
+          mohDocsCount,
+          externalDocsCount
+        }
       });
     });
 
   } else {
+
+    let saleDocs = (await Property.paginate({ contract: "sale" })).docs;
+    let mortgageDocs = (await Property.paginate({ contract: "mortgage" })).docs;
+    let swapDocs = (await Property.paginate({ contract: "swap" })).docs;
+
+    let saleDocsCount = (await Property.paginate({ contract: "sale" })).totalDocs;
+    let mortgageDocsCount = (await Property.paginate({ contract: "mortgage" })).totalDocs;
+    let swapDocsCount = (await Property.paginate({ contract: "swap" })).totalDocs;
+
+    let mohDocsCount = {
+      count2015: (await Property.paginate({ source: "MOH", year: 2015 })).totalDocs,
+      count2016: (await Property.paginate({ source: "MOH", year: 2016 })).totalDocs,
+      count2017: (await Property.paginate({ source: "MOH", year: 2017 })).totalDocs,
+      count2018: (await Property.paginate({ source: "MOH", year: 2018 })).totalDocs,
+      count2019: (await Property.paginate({ source: "MOH", year: 2019 })).totalDocs,
+      count2020: (await Property.paginate({ source: "MOH", year: 2020 })).totalDocs,
+      count2021: (await Property.paginate({ source: "MOH", year: 2021 })).totalDocs
+    };
+
+    let externalDocsCount = {
+      count2015: (await Property.paginate({ source: "EXTERNAL", year: 2015 })).totalDocs,
+      count2016: (await Property.paginate({ source: "EXTERNAL", year: 2016 })).totalDocs,
+      count2017: (await Property.paginate({ source: "EXTERNAL", year: 2017 })).totalDocs,
+      count2018: (await Property.paginate({ source: "EXTERNAL", year: 2018 })).totalDocs,
+      count2019: (await Property.paginate({ source: "EXTERNAL", year: 2019 })).totalDocs,
+      count2020: (await Property.paginate({ source: "EXTERNAL", year: 2020 })).totalDocs,
+      count2021: (await Property.paginate({ source: "EXTERNAL", year: 2021 })).totalDocs
+    };
+
     Property.paginate({}, options, (err, result) => {
       if (err) {
         return res.status(200).json({
@@ -242,7 +308,17 @@ const loadAllProperties = async (req, res) => {
       return res.status(200).json({
         status: 'success',
         message: 'Properties loaded successfully',
-        data: result
+        data: {
+          ...result,
+          saleDocs,
+          mortgageDocs,
+          swapDocs,
+          saleDocsCount,
+          mortgageDocsCount,
+          swapDocsCount,
+          mohDocsCount,
+          externalDocsCount
+        }
       });
     });
   }
